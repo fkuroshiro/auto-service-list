@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import MapView from "./components/MapView.jsx";
+import ServiceList from "./components/ServiceList.jsx";
+import { services } from "./data/services.js";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [selectedService, setSelectedService] = useState(services[0] || null);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="page">
+      <header className="page-header">
+        <div className="page-header__content">
+          <h1>
+            Praxe žáků autooborů – mapa partnerských servisů
+          </h1>
+          <p>
+            Interaktivní mapa autoservisů, ve kterých probíhá praxe
+            žáků Střední školy automobilní a informatiky
+            (Praha–Hostivař) a v&nbsp;okolí Středočeského kraje.
+          </p>
+        </div>
+      </header>
 
-export default App
+      <main className="page-main">
+        <section className="layout">
+          <div className="layout__left">
+            <ServiceList
+              services={services}
+              selectedService={selectedService}
+              onSelect={setSelectedService}
+            />
+          </div>
+          <div className="layout__right">
+            <MapView
+              services={services}
+              selectedService={selectedService}
+              onSelect={setSelectedService}
+            />
+          </div>
+        </section>
+      </main>
+
+      <footer className="page-footer">
+        <p>
+          &copy; {new Date().getFullYear()} Střední škola
+          automobilní a informatiky – studentský projekt mapy
+          partnerských servisů.
+        </p>
+      </footer>
+    </div>
+  );
+}
