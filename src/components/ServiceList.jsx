@@ -2,6 +2,11 @@ export default function ServiceList({
     services,
     selectedService,
     onSelect,
+    searchQuery,
+    onSearchChange,
+    allObory,
+    activeObory,
+    onToggleObor,
 }) {
     return (
         <div className="service-panel">
@@ -10,7 +15,59 @@ export default function ServiceList({
                 Klikni na servis v seznamu nebo na mapě pro zobrazení detailu.
             </p>
 
+            {/* FILTRY */}
+            <div className="filters">
+                <div className="filters__row">
+                    <input
+                        type="text"
+                        className="filters__search"
+                        placeholder="Hledat podle názvu, města, adresy…"
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                    />
+                </div>
+
+                <div className="filters__row filters__row--chips">
+                    {allObory.map((obor) => {
+                        const active = activeObory.includes(obor);
+                        return (
+                            <button
+                                key={obor}
+                                type="button"
+                                className={
+                                    "chip" + (active ? " chip--active" : "")
+                                }
+                                onClick={() => onToggleObor(obor)}
+                            >
+                                {obor}
+                            </button>
+                        );
+                    })}
+                    {allObory.length > 0 && (
+                        <button
+                            type="button"
+                            className={
+                                "chip chip--ghost" +
+                                (activeObory.length === 0
+                                    ? " chip--ghost-active"
+                                    : "")
+                            }
+                            onClick={() => onSearchChange(searchQuery) || onToggleAllOff()}
+                        >
+                            Všechny obory
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* seznam servisů */}
             <div className="service-panel__list">
+                {services.length === 0 && (
+                    <p className="service-panel__empty">
+                        Žádný servis neodpovídá zadanému filtru.
+                    </p>
+                )}
+
                 {services.map((service) => {
                     const isActive =
                         selectedService && selectedService.id === service.id;
@@ -108,4 +165,12 @@ export default function ServiceList({
             )}
         </div>
     );
+
+    // pomocná funkce „Všechny obory“
+    function onToggleAllOff() {
+        // když jsou nějaké aktivní → vyčistíme (všechny obory)
+        if (activeObory.length > 0) {
+            onToggleObor("__reset__"); // hack obejdeme dole
+        }
+    }
 }
